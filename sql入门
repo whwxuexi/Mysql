@@ -1,0 +1,315 @@
+day1
+
+SELECT prod_id FROM milk_tea;#查询某一行
+
+SELECT milk_tea.in_price FROM milk_tea;#归属类查询某一行
+
+SELECT * FROM milk_tea;#查询所有行
+
+SELECT m.in_price, m.net_w FROM milk_tea AS m; #将表名简单变化的方法
+ 
+SELECT 0.9 AS discount FROM milk_tea ;#别名增加一行的操作
+
+SELECT m.sale_price, m.in_price, m.sale_price-m.in_price AS profit FROM milk_tea AS m; #减法
+
+SELECT  m.prod_name, m.sale_price, m.in_price, m.sale_price*0.9 AS new FROM milk_tea AS m;
+
+day2
+
+SELECT m.*,CONCAT(prod_name,'(',net_w,')') AS 产品信息 FROM milk_tea AS m; #熟悉concat的使用方法，*用法指定所有的表格内容
+
+SELECT m.*,CONCAT_WS('是',m.prod_name,m.net_w,m.sale_price) AS 产品信息 FROM milk_tea AS m ; #CONCAT_WS的使用
+
+SELECT 6;
+
+SELECT CONCAT('SQL','训练营');
+
+SELECT DISTINCT m.sale_price FROM milk_tea AS m; #distinct 作用为去重复值来使用
+
+SELECT m.* FROM milk_tea AS m ORDER BY valid_month; #ORDER BY按顺序排列且默认为升序
+
+SELECT m.* FROM milk_tea AS m ORDER BY valid_month DESC;#改变关键字为降序
+
+SELECT m.* FROM milk_tea AS m ORDER BY pro_date;#日期升序
+
+SELECT m.* FROM milk_tea AS m ORDER BY 5,7 ;#列数升序 可单独对选择表中一列数据进行展示
+
+day3
+SELECT m.* FROM milk_tea AS m WHERE m.sale_price=15;
+ 
+SELECT m.* FROM milk_tea AS m WHERE m.sale_price<15;
+
+SELECT m.*,m.sale_price-m.in_price AS profit FROM milk_tea AS m WHERE m.sale_price-m.in_price  > 5;# 过滤计算符
+
+#IFNULL(expr1,expr2)
+
+SELECT m.* FROM milk_tea AS m WHERE IFNULL(sale_price,15)=1;# Mysql查询中可以使用IFNULL()函数，IFNULL函数中有两个参数，它的作用是测试如果ifnull第一个参数不为null，就会显示出查询的结果，如果第一个参数为null，则会返回第二个参数的字符串，
+
+SELECT m.* FROM milk_tea AS m WHERE m.in_price BETWEEN 5 AND 10; # BETWEEN AND的使用
+
+SELECT m.* FROM milk_tea AS m WHERE m.sale_price IS NULL; # IS NOT NULL 的使用
+
+day4
+
+SELECT * FROM milk_tea AS m WHERE m.prod_name LIKE '奶_';
+
+SELECT * FROM milk_tea AS m WHERE m.prod_name LIKE '薯_'; 
+
+-- % 注释  通配符的使用 尽量记住首字母
+
+SELECT * FROM milk_tea AS m WHERE m.prod_name LIKE '奶%';
+
+-- % \转义字符的使用
+
+SELECT m.* FROM milk_tea AS m WHERE m.sale_price BETWEEN 5 AND 15; 
+
+SELECT m.* FROM milk_tea AS m WHERE m.sale_price>5;
+
+SELECT m.* FROM milk_tea AS m WHERE m.sale_price<15;
+
+SELECT m.* FROM milk_tea AS m WHERE m.sale_price>=5 AND m.sale_price<=15 AND m.prod_name LIKE '薯_';
+
+SELECT m.* FROM milk_tea AS m WHERE m.sale_price>5 OR m.sale_price<15;  
+
+-- % AND与OR的使用
+
+SELECT m.* FROM milk_tea AS m WHERE m.prod_name='薯片';
+
+SELECT m.* FROM milk_tea AS m WHERE not m.prod_name='薯片';
+
+SELECT m.* FROM milk_tea AS m WHERE NOT m.in_price IN (10.8,2.1,9.3); -- % NOT的使用
+
+SELECT ABS(-3);
+
+SELECT ABS(3);
+
+SELECT SQRT(4);
+
+SELECT SQRT(25);
+
+SELECT EXP(2);
+
+SELECT PI()+2;
+
+SELECT LENGTH('1234');
+
+SELECT CHAR_LENGTH('1234');
+
+SELECT LENGTH('家庭');
+
+SELECT CHAR_LENGTH('家庭');  -- % 各个操作字符的使用
+
+day5
+
+SELECT * FROM milk_tea AS m;
+
+SELECT COUNT(*) FROM milk_tea AS m;
+
+SELECT COUNT(1) FROM milk_tea AS m;
+
+SELECT COUNT(prod_name) FROM milk_tea AS m;
+
+SELECT COUNT(sale_price) FROM milk_tea AS m;
+
+SELECT COUNT(DISTINCT m.sale_price) AS m;
+
+SELECT SUM(in_price) FROM milk_tea;
+
+SELECT SUM(in_price)*1.1 FROM milk_tea;
+
+SELECT SUM(sale_price) FROM milk_tea;
+
+SELECT SUM(sale_price-in_price) FROM milk_tea;
+
+SELECT SUM(IFNULL(sale_price,0)-in_price)FROM milk_tea;
+
+SELECT AVG(sale_price) FROM milk_tea;
+
+SELECT MIN(sale_price) FROM milk_tea;
+
+SELECT MAX(sale_price) FROM milk_tea;
+
+SELECT net_w, COUNT(sale_price) FROM milk_tea WHERE net_w IN ('100g','150g') GROUP BY net_w;
+
+SELECT net_w, COUNT(sale_price) FROM milk_tea WHERE net_w IN ('100g','150g') GROUP BY net_w;
+
+SELECT * FROM prod_info GROUP BY class;
+
+SELECT class, AVG(sale_price) FROM prod_info GROUP BY class;
+
+day6
+
+SELECT sale_price FROM milk_tea WHERE prod_name='奶茶';
+
+SELECT * 
+FROM milk_tea 
+WHERE sale_price > (
+                    SELECT sale_price 
+										 FROM milk_tea 
+										 WHERE prod_name='奶茶'); # 标量子查询
+										 
+SELECT *,(
+           SELECT sale_price 
+					 FROM milk_tea 
+					WHERE prod_name='奶茶')
+FROM milk_tea;
+
+SELECT class,AVG(sale_price)
+FROM prod_info WHERE class='日用品'
+GROUP BY class;
+
+SELECT *
+FROM prod_info AS p2
+WHERE sale_price>(
+SELECT AVG(sale_price)
+FROM prod_info AS p
+WHERE p.class=p2.class
+GROUP BY p.class);       #关联子查询
+
+SELECT * FROM milk_tea AS m1
+WHERE m1.prod_name IN (
+SELECT m2.prod_name 
+FROM milk_tea AS m2
+WHERE m2.sale_price=15
+);                        #普通子查询
+
+SELECT * FROM prod_info AS p;
+SELECT * FROM supplier_info AS s;
+SELECT p.*, s.* FROM prod_info AS p, supplier_info AS s WHERE prod_info = supplier_info; # 内部查询
+
+SELECT p.*, l.* 
+FROM prod_info AS p INNER JOIN order_list AS l
+ON p.prod_id=l.prod_id
+AND l.order_id='20190403001'
+
+UPDATE table_reference SET col_name1=expr1 WHERE where_condition
+SELECT c.*, l.* 
+FROM cust_info AS c LEFT OUTER JOIN order_list AS l
+ON c.cust_id=l.cust_id
+AND l.order_id LIKE '20190401%';
+
+SELECT c.cust_id, COUNT(l.prod_id)
+FROM cust_info as c LEFT OUTER JOIN order_list AS l
+ON c.cust_id=l.cust_id
+AND l.order_id LIKE '20190401%'
+GROUP BY c.cust_id;
+
+SELECT * FROM order_list AS l WHERE l.order_id LIKE '20190401%'
+UNION
+SELECT * FROM order_list AS l WHERE l.order_id LIKE '20190407%';  # 用在不同的表
+
+day7
+SELECT * FROM prod_info_copy1 ORDER BY prod_id DESC;
+
+INSERT INTO prod_info_copy1 VALUES('T00001','测试商品','test','test','test',16,20,'N20001');
+
+INSERT INTO prod_info_copy1 (prod_id,prod_name,brand,type) VALUES('T00002','测试商品','test','test');
+
+SELECT * FROM prod_info_copy1 AS P
+WHERE P.prod_id='10001';
+
+INSERT INTO prod_info_copy1 
+SELECT * FROM prod_info_copy1 AS P
+WHERE P.prod_id='10001';
+
+INSERT INTO prod_info_copy1 
+SELECT CONCAT('T',p.prod_id),
+p.prod_name,p.brand,p.type,p.class,p.cost,p.sale_price,p.supplier_id 
+FROM prod_info_copy1 AS p
+WHERE p.prod_id LIKE '2000%';
+
+INSERT INTO prod_info_copy1 
+SELECT CONCAT('T',p.prod_id),
+p.prod_name,p.brand,p.type
+FROM prod_info_copy1 AS p
+WHERE p.prod_id ='10002';
+
+SELECT * FROM prod_info_copy1 ORDER BY prod_id DESC;
+
+UPDATE prod_info_copy1
+SET class ='日用品';
+
+UPDATE prod_info_copy1
+SET class ='零食'
+WHERE prod_id LIKE 'T2%';
+
+SELECT * FROM prod_info_copy1 WHERE prod_id LIKE '3%';
+
+UPDATE prod_info_copy1
+SET class ='饮料'
+WHERE prod_id LIKE '3%';
+
+SELECT p2.*,p.*
+FROM prod_info_copy1 INNER JOIN prod_info p
+WHERE p2.prod_name=
+
+SELECT * FROM prod_info_copy1 WHERE prod_name='测试商品';
+DELETE FROM prod_info_copy1 WHERE prod_name='测试商品';  #删除
+
+TRUNCATE TABLE prod_info_copy1 # 删除全部表
+  
+day8
+CREATE TABLE pet2
+(
+name VARCHAR(225) NOT NULL,
+OWNER VARCHAR(225) NOT NULL,
+speices VARCHAR(225),
+sex CHAR(1),
+birth DATE,
+death DATE
+);
+SELECT * FROM pet2;
+
+INSERT INTO pet2 VALUES('Bowser','diane','dog','m','1979-08-31','1995-07-22');
+
+CREATE TABLE pet2
+(
+name VARCHAR(225) NOT NULL,
+OWNER VARCHAR(225) DEFAULT 'police',
+speices VARCHAR(225),
+sex CHAR(1),
+birth DATE,
+death DATE
+);
+
+INSERT INTO pet2 (name,speices,sex) VALUES('Bowser','dog','m'); #怎么使用默认值
+
+UPDATE pet2
+SET OWNER=NULL
+WHERE name='Bowser';
+
+SELECT * FROM pet3
+
+CREATE TABLE pet3
+AS
+SELECT p2.NAME, p2.OWNER FROM pet2 AS p2 WHERE 1=2;
+
+DROP TABLE pet3;
+
+ALTER TABLE pet3 ADD sex CHAR(1);
+ALTER TABLE pet3 ADD birth DATE NOT NULL;
+ALTER TABLE pet3 DROP birth,DROP sex;
+ALTER TABLE pet3 DROP COLUMN birth;
+
+ALTER TABLE pet3 MODIFY COLUMN sex VARCHAR(255);
+
+RENAME TABLE pet3 to pet4;
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
